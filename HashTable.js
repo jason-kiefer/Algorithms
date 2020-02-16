@@ -1,6 +1,13 @@
 /*
 *   JavaScript Hash Example
+*   Work in progress
 */
+
+let bcrypt = require('bcrypt')
+
+class LinkedList {
+    
+}
 
 class HashTable {
     constructor() {
@@ -10,37 +17,70 @@ class HashTable {
         })
     }
 
-    hash(data) {
-        return data;
+    async hash(data) {
+        return new Promise((resolve, reject) => {
+             bcrypt.genSalt(10)
+            .then(salt => {
+                bcrypt.hash(data.toString(), salt)
+                .then(hash => {
+                    resolve(hash);
+                })
+                .catch(err => {
+                    reject(err);
+                })
+            })
+            .catch(err => {
+                reject(err);
+            })
+        })
     }
 
-    generateKey(hash) {
-        return parseInt(Math.random() * 9, 10);
+    async generateKey(hash) {
+        return new Promise((resolve, reject) => {
+            //hash.split('$')[3].toString()
+            resolve(this.stringToInt(hash.split('$')[3].toString(), 0, 1000));
+        });
     }
 
-    insert(data) {
+    async stringToInt(str, min, max) {
+        return new Promise((resolve, reject) => {
+
+            let result = 0;
+
+            for (let i = 0; i < str.length; i++)
+                result = result + str.charCodeAt(i);
+        
+            resolve((result % (max - min)) + min);
+        })
+    }
+
+    async insert(data) {
 
         let { table } = this;
-
-        let hash = this.hash(data);
-        let key = this.generateKey(hash);
-
+  
         let entry = {
             data: JSON.stringify(data),
             next: null
         };
-        
-        let node = table[key];
 
-        if (node.next == null) {
-            table[key] = entry;
-            return;
-        }
-        
-        while(node.next) {
-            node = node.next;
-        }
-        node.next = entry;
+        this.hash(data)
+        .then(hash => {
+            this.generateKey(hash)
+            .then(key => {
+                let node = table[key];
+    
+                if (node == null) {
+                    table[key] = entry;
+                    return;
+                }
+
+                while(node.next) {
+                    node = node.next;
+                }
+
+                node.next = entry;
+            })
+        })
     }
 }
 
@@ -56,13 +96,12 @@ function main() {
 
     for ( let i = 0 ; i < heap.table.length ; i++ ) {
         
-        let node = heap.table[i];
+        let node = heap.table[i].head;
 
         while(node) {
-            process.stdout.write(node.data);
+            process.stdout.write(node.data.toString())
             node = node.next;
         }
-        
     }
 }
 
