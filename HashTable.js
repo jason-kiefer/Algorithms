@@ -6,7 +6,7 @@
 let bcrypt = require('bcrypt')
 
 class LinkedList {
-    
+
 }
 
 class HashTable {

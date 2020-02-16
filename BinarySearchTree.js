@@ -7,6 +7,12 @@ class Node {
     }
 }
 
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+}
+
 class BinarySearchTree {
     constructor() {
         this.root = null;
