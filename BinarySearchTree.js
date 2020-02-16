@@ -58,8 +58,9 @@ class BinarySearchTree {
 
 let BST = new BinarySearchTree();
 
-for (let i = 0 ; i < 5 ; i ++ )
+for (let i = 0 ; i < 5 ; i ++ ){
     BST.insert(new Node(parseInt(Math.random() * (10000 - 1) + 1, 10)));
+}
 
 BST.pre_traverse(BST.root);
 process.stdout.write('\n');
