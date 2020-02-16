@@ -78,18 +78,23 @@ class Trie {
     }
 }
 
-let trie = new Trie();
+function main() {
 
-trie.createWord('hey');
-trie.createWord('Horse');
+    let trie = new Trie();
 
-trie.insertDefinition('hey', 'Greeting');
-trie.insertDefinition('hey', 'Slang');
-trie.insertDefinition('Horse', 'A fast land mammel');
-trie.insertDefinition('Horse', 'Used by knights in medieval times');
-trie.insertDefinition('Horse', 'Give live births');
+    trie.createWord('hey');
+    trie.createWord('Horse');
 
-trie.searchDefinition('hey');
-trie.searchDefinition('Horse');
+    trie.insertDefinition('hey', 'Greeting');
+    trie.insertDefinition('hey', 'Slang');
+    trie.insertDefinition('Horse', 'A fast land mammel');
+    trie.insertDefinition('Horse', 'Used by knights in medieval times');
+    trie.insertDefinition('Horse', 'Give live births');
 
-//trie.search('Empty');
+    trie.searchDefinition('hey');
+    trie.searchDefinition('Horse');
+
+    //trie.search('Empty');
+}
+
+main();
