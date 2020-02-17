@@ -59,7 +59,7 @@ class Trie {
         node.next = new Definition(description);
     }
 
-    searchDefinition(value, root = this.root) {
+    traverse(value, root = this.root) {
 
         process.stdout.write('Searching for \'' + value + '\': \n');
 
@@ -78,6 +78,8 @@ class Trie {
     }
 }
 
+
+
 function main() {
 
     let trie = new Trie();
@@ -91,8 +93,8 @@ function main() {
     trie.insertDefinition('Horse', 'Used by knights in medieval times');
     trie.insertDefinition('Horse', 'Give live births');
 
-    trie.searchDefinition('hey');
-    trie.searchDefinition('Horse');
+    trie.traverse('hey');
+    trie.traverse('Horse');
 
     //trie.search('Empty');
 }
