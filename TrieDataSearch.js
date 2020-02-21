@@ -1,3 +1,42 @@
+const {Builder, By, Key, until} = require('selenium-webdriver');
+let chrome = require('selenium-webdriver/chrome');
+let chromedriver = require('chromedriver');
+let gecko = require('geckodriver');
+let JSSoup = require('jssoup').default;
+
+chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build());
+
+async function scrape() {
+    let driver = await new Builder().forBrowser('chrome').build();
+    try {
+        // Navigate to Url
+        await driver.get('https://www.google.com');
+
+        // Enter text "cheese" and perform keyboard action "Enter"
+        await driver.findElement(By.name('q')).sendKeys('cake wikipedia', Key.ENTER);
+
+        await driver.wait(until.elementLocated(By.css('h3')), 10000).click();
+
+        driver.getPageSource()
+        .then(page => {
+            let html = new JSSoup(page).findAll('p');
+            console.log(html[1].text);
+        })
+        /*
+        .then(wiki => {
+            let html = new JSSoup(wiki).findAll('p');
+            console.log(html);
+            /*wiki.forEach(async el => {
+                const result = await el.getAttribute('textContent');
+                console.log(result);
+            });
+        })*/
+    }
+    finally {
+        driver.quit();
+    }
+};
+
 class LinkedList {
     constructor() {
         this.head = null;
@@ -81,6 +120,8 @@ class Trie {
 
 
 function main() {
+
+    scrape();
 
     let trie = new Trie();
 
