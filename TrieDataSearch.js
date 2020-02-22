@@ -18,17 +18,7 @@ async function scrape() {
 
     let driver = await new Builder()
         .forBrowser('chrome')
-        /*.setChromeOptions(
-            new chrome.Options()
-                .addArguments("--window-size=1920,1080")
-                .addArguments("--disable-gpu")
-                .addArguments("--disable-extensions")
-                .addArguments("--proxy-server='direct://'")
-                .addArguments("--proxy-bypass-list=*")
-                .addArguments("--start-maximized")
-                .addArguments("--headless")
-        )
-        .withCapabilities(capabilities)*/
+        .withCapabilities(capabilities)
         .build();
 
     try {
@@ -39,17 +29,27 @@ async function scrape() {
         await driver.wait(until.elementLocated(By.css('h3')), 10000).click();
 
         driver.getPageSource()
-        .then(page => {
+        .then(async page => {
             let html = new JSSoup(page).findAll('p');
             trie.createWord('cheese');
-            trie.insertDefinition('cheese', html[1].text.trim());
-            trie.insertDefinition('cheese', html[2].text.trim());
-            trie.insertDefinition('cheese', html[3].text.trim());
+            for (let i =0 ; i < 3 ; i++)
+                trie.insertDefinition('cheese', html[i].text.trim());
             trie.traverse('cheese');
+            driver.findElements(By.xpath('//*[@class="mw-parser-output"]//a'))
+            .then(aTags => {
+                console.log('ATAGS')
+                aTags[1].click();
+                /*
+                aTags.forEach(async a => {
+                    await a.click()
+                })
+                */
+            })
+
         })
     }
     finally {
-        driver.quit();
+        //driver.quit();
     }
 };
 
