@@ -37,7 +37,6 @@ async function scrape() {
             trie.traverse('cheese');
             driver.findElements(By.xpath('//*[@class="mw-parser-output"]//a'))
             .then(aTags => {
-                console.log('ATAGS')
                 aTags[1].click();
                 /*
                 aTags.forEach(async a => {
