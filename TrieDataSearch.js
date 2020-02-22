@@ -9,11 +9,6 @@ chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build());
 
 async function scrape() {
 
-    const screen = {
-        width: 640,
-        height: 480
-    };
-
     var capabilities = selenium.Capabilities.chrome();
 
     let driver = await new Builder()
@@ -37,12 +32,10 @@ async function scrape() {
             trie.traverse('cheese');
             driver.findElements(By.xpath('//*[@class="mw-parser-output"]//a'))
             .then(aTags => {
-                aTags[1].click();
-                /*
+                //aTags[1].click();
                 aTags.forEach(async a => {
-                    await a.click()
+                    console.log(await a.getAttribute("href"));
                 })
-                */
             })
 
         })
@@ -123,15 +116,11 @@ class Trie {
 
         let head = root.definitions.head
 
-        let counter = 1;
-
         while(head) {
-            process.stdout.write('Definition ' + counter.toString() + ':\n');
             head 
                 ? process.stdout.write(head.description.toString() + '\n\n')
                 : process.stdout.write('No definitions found\n');
             head = head.next;
-            counter++;
         }
     }
 }
