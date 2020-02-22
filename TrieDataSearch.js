@@ -1,4 +1,5 @@
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const { Builder, By, Key, until } = require('selenium-webdriver');
+const selenium = require('selenium-webdriver');
 let chrome = require('selenium-webdriver/chrome');
 let chromedriver = require('chromedriver');
 let gecko = require('geckodriver');
@@ -7,30 +8,45 @@ let JSSoup = require('jssoup').default;
 chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build());
 
 async function scrape() {
-    let driver = await new Builder().forBrowser('chrome').build();
+
+    const screen = {
+        width: 640,
+        height: 480
+    };
+
+    var capabilities = selenium.Capabilities.chrome();
+
+    let driver = await new Builder()
+        .forBrowser('chrome')
+        /*.setChromeOptions(
+            new chrome.Options()
+                .addArguments("--window-size=1920,1080")
+                .addArguments("--disable-gpu")
+                .addArguments("--disable-extensions")
+                .addArguments("--proxy-server='direct://'")
+                .addArguments("--proxy-bypass-list=*")
+                .addArguments("--start-maximized")
+                .addArguments("--headless")
+        )
+        .withCapabilities(capabilities)*/
+        .build();
+
     try {
-        // Navigate to Url
         await driver.get('https://www.google.com');
 
-        // Enter text "cheese" and perform keyboard action "Enter"
-        await driver.findElement(By.name('q')).sendKeys('cake wikipedia', Key.ENTER);
+        await driver.findElement(By.name('q')).sendKeys('cheese wikipedia', Key.ENTER);
 
         await driver.wait(until.elementLocated(By.css('h3')), 10000).click();
 
         driver.getPageSource()
         .then(page => {
             let html = new JSSoup(page).findAll('p');
-            console.log(html[1].text);
+            trie.createWord('cheese');
+            trie.insertDefinition('cheese', html[1].text.trim());
+            trie.insertDefinition('cheese', html[2].text.trim());
+            trie.insertDefinition('cheese', html[3].text.trim());
+            trie.traverse('cheese');
         })
-        /*
-        .then(wiki => {
-            let html = new JSSoup(wiki).findAll('p');
-            console.log(html);
-            /*wiki.forEach(async el => {
-                const result = await el.getAttribute('textContent');
-                console.log(result);
-            });
-        })*/
     }
     finally {
         driver.quit();
@@ -108,36 +124,23 @@ class Trie {
 
         let head = root.definitions.head
 
+        let counter = 1;
+
         while(head) {
+            process.stdout.write('Definition ' + counter.toString() + ':\n');
             head 
-                ? process.stdout.write(head.description.toString() + '\n')
+                ? process.stdout.write(head.description.toString() + '\n\n')
                 : process.stdout.write('No definitions found\n');
             head = head.next;
+            counter++;
         }
     }
 }
 
-
+let trie = new Trie();
 
 function main() {
-
     scrape();
-
-    let trie = new Trie();
-
-    trie.createWord('hey');
-    trie.createWord('Horse');
-
-    trie.insertDefinition('hey', 'Greeting');
-    trie.insertDefinition('hey', 'Slang');
-    trie.insertDefinition('Horse', 'A fast land mammel');
-    trie.insertDefinition('Horse', 'Used by knights in medieval times');
-    trie.insertDefinition('Horse', 'Give live births');
-
-    trie.traverse('hey');
-    trie.traverse('Horse');
-
-    //trie.search('Empty');
 }
 
 main();
